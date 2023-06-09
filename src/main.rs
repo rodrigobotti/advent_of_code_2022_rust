@@ -1,6 +1,7 @@
 mod day_1;
 mod day_2;
 mod day_3;
+mod day_4;
 mod utils;
 
 #[macro_use]
@@ -23,4 +24,9 @@ fn main() {
 
     day_3::solution_part_1();
     day_3::solution_part_2();
+
+    utils::print_separator();
+
+    day_4::solution_part_1();
+    day_4::solution_part_2();
 }

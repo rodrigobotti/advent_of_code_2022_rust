@@ -75,5 +75,5 @@ pub fn soluction_iterator_part_2() {
         .take(3)
         .sum();
 
-    println!("Day 1 pt 1 answer is: {max_calories}");
+    println!("Day 1 pt 2 answer is: {max_calories}");
 }

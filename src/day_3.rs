@@ -1,7 +1,4 @@
-use std::{
-    collections::{HashMap, HashSet},
-    hash::Hash,
-};
+use std::collections::{HashMap, HashSet};
 
 use itertools::Itertools;
 
@@ -80,21 +77,14 @@ pub fn solution_part_1() {
 // **        PART 2        **
 // **************************
 
-fn intersection<T>(sets: &mut Vec<HashSet<T>>) -> HashSet<T>
-where
-    T: Eq + Hash,
-{
-    let mut result = sets.pop().unwrap();
-    result.retain(|item| sets.iter().all(|set| set.contains(item)));
-    result
-}
-
 fn find_badge(elf_1: &str, elf_2: &str, elf_3: &str) -> char {
     let a: HashSet<char> = elf_1.chars().collect();
     let b: HashSet<char> = elf_2.chars().collect();
     let c: HashSet<char> = elf_3.chars().collect();
 
-    let badge: Vec<_> = intersection(&mut vec![a, b, c]).into_iter().collect();
+    let badge: Vec<_> = utils::intersection(&mut vec![a, b, c])
+        .into_iter()
+        .collect();
 
     if badge.is_empty() {
         panic!("Elves have no badge")

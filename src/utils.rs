@@ -1,6 +1,8 @@
 use std::{
+    collections::HashSet,
     env,
     fs::File,
+    hash::Hash,
     io::{self, BufRead, BufReader, Lines},
     path::{Path, PathBuf},
 };
@@ -31,6 +33,15 @@ pub fn read_input_lines(file_name: &str) -> Lines<BufReader<File>> {
 
 pub fn read_line(line: io::Result<String>) -> String {
     line.expect("Failed to read line from buffer")
+}
+
+pub fn intersection<T>(sets: &mut Vec<HashSet<T>>) -> HashSet<T>
+where
+    T: Eq + Hash,
+{
+    let mut result = sets.pop().unwrap();
+    result.retain(|item| sets.iter().all(|set| set.contains(item)));
+    result
 }
 
 #[macro_export]
