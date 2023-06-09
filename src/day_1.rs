@@ -1,14 +1,19 @@
-use crate::utils::input_file_path;
+use crate::utils;
 use itertools::Itertools;
-use std::fs;
+
+const INPUT_FILE_NAME: &str = "day_1.txt";
+
+// **************************
+// **        PART 1        **
+// **************************
 
 pub fn solution_part_1() {
-    let file_path = input_file_path("day_1.txt");
-
     let mut max_calories: usize = 0;
     let mut current_elf_calories: usize = 0;
 
-    for line in fs::read_to_string(file_path).unwrap().lines() {
+    let lines = utils::read_input_lines(INPUT_FILE_NAME);
+    for line in lines {
+        let line = line.expect("failed to read line from buffered file");
         if line.is_empty() {
             if current_elf_calories > max_calories {
                 max_calories = current_elf_calories;
@@ -16,7 +21,7 @@ pub fn solution_part_1() {
             current_elf_calories = 0;
             continue;
         }
-        let calory: usize = line.parse().unwrap();
+        let calory: usize = line.parse().expect("{line} is not a number");
         current_elf_calories += calory
     }
 
@@ -24,12 +29,10 @@ pub fn solution_part_1() {
 }
 
 pub fn soluction_iterator_part_1() {
-    let file_path = input_file_path("day_1.txt");
+    let lines = utils::read_input_lines(INPUT_FILE_NAME);
 
-    let max_calories = fs::read_to_string(file_path)
-        .unwrap()
-        .lines()
-        .map(|line| line.parse::<usize>().ok())
+    let max_calories = lines
+        .map(|line| line.ok()?.parse::<usize>().ok())
         .coalesce(|prev, curr| match (prev, curr) {
             (None, None) => Ok(None),
             (None, Some(v)) => Ok(Some(v)),
@@ -52,13 +55,15 @@ pub fn soluction_iterator_part_1() {
     println!("Day 1 pt 1 answer is: {max_calories}");
 }
 
-pub fn soluction_iterator_part_2() {
-    let file_path = input_file_path("day_1.txt");
+// **************************
+// **        PART 2        **
+// **************************
 
-    let max_calories: usize = fs::read_to_string(file_path)
-        .unwrap()
-        .lines()
-        .map(|line| line.parse::<usize>().ok())
+pub fn soluction_iterator_part_2() {
+    let lines = utils::read_input_lines(INPUT_FILE_NAME);
+
+    let max_calories: usize = lines
+        .map(|line| line.ok()?.parse::<usize>().ok())
         .coalesce(|prev, curr| match (prev, curr) {
             (None, None) => Ok(None),
             (None, Some(v)) => Ok(Some(v)),

@@ -1,8 +1,10 @@
-use std::{collections::HashMap, fs};
+use std::collections::HashMap;
 
 use itertools::Itertools;
 
 use crate::utils;
+
+const INPUT_FILE_NAME: &str = "day_2.txt";
 
 // **************************
 // **        PART 1        **
@@ -44,23 +46,28 @@ lazy_static! {
 }
 
 fn pt1_round_points(opponent: &str, player: &str) -> usize {
-    let player_move_points = PT1_PLAYER_MOVE_POINTS.get(player).unwrap();
-    let outcome_points = PT1_ROUND_MOVES_POINTS.get(&(opponent, player)).unwrap();
+    let player_move_points = PT1_PLAYER_MOVE_POINTS
+        .get(player)
+        .expect("cannot reolve points for player move {player}");
+
+    let outcome_points = PT1_ROUND_MOVES_POINTS
+        .get(&(opponent, player))
+        .expect("cannot resolve round points given opponent={opponent} + player={player}");
 
     player_move_points + outcome_points
 }
 
 pub fn solution_part_1() {
-    let file_path = utils::input_file_path("day_2.txt");
+    let lines = utils::read_input_lines(INPUT_FILE_NAME);
 
-    let points: usize = fs::read_to_string(file_path)
-        .unwrap()
-        .lines()
-        .map(|line| match line.split_whitespace().collect_tuple() {
-            Some((o, p)) => (o, p),
-            None => panic!("failed to parse line into opponent and player"),
-        })
-        .map(|(o, p)| pt1_round_points(o, p))
+    let points: usize = lines
+        .map(
+            |line| match utils::read_line(line).split_whitespace().collect_tuple() {
+                Some((o, p)) => (o.to_owned(), p.to_owned()),
+                None => panic!("failed to parse line into opponent and player"),
+            },
+        )
+        .map(|(o, p)| pt1_round_points(o.as_str(), p.as_str()))
         .sum();
 
     println!("Day 2 pt 1 answers is: {points}");
@@ -110,24 +117,30 @@ lazy_static! {
 }
 
 fn pt2_round_points(opponent: &str, outcome: &str) -> usize {
-    let outcome_points = PT2_OUTCOME_POINTS.get(outcome).unwrap();
-    let player_move = PT2_ROUND_PLAYER_MOVE.get(&(opponent, outcome)).unwrap();
+    let outcome_points = PT2_OUTCOME_POINTS
+        .get(outcome)
+        .expect("cannot calculate outcome points for {outcome}");
+
+    let player_move = PT2_ROUND_PLAYER_MOVE
+        .get(&(opponent, outcome))
+        .expect("cannot resolve player move from outcome={outcome} + opponent={opponent}");
+
     let player_move_points = PT2_PLAYER_MOVE_POINTS.get(player_move).unwrap();
 
     outcome_points + player_move_points
 }
 
 pub fn solution_part_2() {
-    let file_path = utils::input_file_path("day_2.txt");
+    let lines = utils::read_input_lines(INPUT_FILE_NAME);
 
-    let points: usize = fs::read_to_string(file_path)
-        .unwrap()
-        .lines()
-        .map(|line| match line.split_whitespace().collect_tuple() {
-            Some((o, p)) => (o, p),
-            None => panic!("failed to parse line into opponent and outcome"),
-        })
-        .map(|(opponent, outcome)| pt2_round_points(opponent, outcome))
+    let points: usize = lines
+        .map(
+            |line| match utils::read_line(line).split_whitespace().collect_tuple() {
+                Some((o, p)) => (o.to_owned(), p.to_owned()),
+                None => panic!("failed to parse line into opponent and outcome"),
+            },
+        )
+        .map(|(opponent, outcome)| pt2_round_points(opponent.as_str(), outcome.as_str()))
         .sum();
 
     println!("Day 2 pt 2 answers is: {points}");

@@ -1,6 +1,5 @@
 use std::{
     collections::{HashMap, HashSet},
-    fs,
     hash::Hash,
 };
 
@@ -32,13 +31,14 @@ lazy_static! {
     };
 }
 
-fn split_into_compartments(rucksack: &str) -> (&str, &str) {
+fn split_into_compartments(rucksack: String) -> (String, String) {
     let length = rucksack.len();
     if length % 2 != 0 {
         panic!("rucksack {rucksack} does not have an even size")
     }
 
-    rucksack.split_at(length / 2)
+    let (a, b) = rucksack.split_at(length / 2);
+    (a.to_owned(), b.to_owned())
 }
 
 fn common_item(first_compartment: &str, second_compartment: &str) -> char {
@@ -64,13 +64,12 @@ fn get_priority(c: char) -> usize {
 }
 
 pub fn solution_part_1() {
-    let file_path = utils::input_file_path(INPUT_FILE_NAME);
+    let lines = utils::read_input_lines(INPUT_FILE_NAME);
 
-    let priorities: usize = fs::read_to_string(file_path)
-        .unwrap()
-        .lines()
+    let priorities: usize = lines
+        .map(utils::read_line)
         .map(split_into_compartments)
-        .map(|(first, second)| common_item(first, second))
+        .map(|(first, second)| common_item(first.as_str(), second.as_str()))
         .map(get_priority)
         .sum();
 
@@ -108,18 +107,17 @@ fn find_badge(elf_1: &str, elf_2: &str, elf_3: &str) -> char {
 }
 
 pub fn solution_part_2() {
-    let file_path = utils::input_file_path(INPUT_FILE_NAME);
+    let lines = utils::read_input_lines(INPUT_FILE_NAME);
 
-    let priorities: usize = fs::read_to_string(file_path)
-        .unwrap()
-        .lines()
+    let priorities: usize = lines
         .chunks(3)
         .into_iter()
+        .map(|chunk| chunk.map(utils::read_line))
         .map(|chunk| match chunk.collect_tuple() {
             Some((a, b, c)) => (a, b, c),
             None => panic!("Could not group elves in groups of 3"),
         })
-        .map(|(a, b, c)| find_badge(a, b, c))
+        .map(|(a, b, c)| find_badge(a.as_str(), b.as_str(), c.as_str()))
         .map(get_priority)
         .sum();
 
